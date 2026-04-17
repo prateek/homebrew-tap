@@ -10,7 +10,11 @@ class Agentsview < Formula
   depends_on "node" => :build
 
   def install
-    system "make", "build", "VERSION=v#{version}"
+    if build.stable?
+      system "make", "build", "VERSION=v#{version}", "COMMIT=3758c37"
+    else
+      system "make", "build"
+    end
     bin.install "agentsview"
   end
 
