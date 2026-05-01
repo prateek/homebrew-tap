@@ -1,21 +1,40 @@
 # homebrew-tap
 
-Prateek's personal Homebrew tap.
+Prateek's personal Homebrew tap for tools that are not yet available in the
+upstream project's tap or Homebrew core.
 
-## Usage
+## Setup
 
 ```sh
 brew tap prateek/tap
+```
+
+## Projects
+
+### AgentsView
+
+Local web viewer for AI agent sessions.
+
+- Upstream: <https://github.com/wesm/agentsview>
+- Distribution discussion: <https://github.com/wesm/agentsview/issues/347>
+
+#### Formulae
+
+- `agentsview` — CLI. Installs from upstream `main` by default.
+
+```sh
 brew install prateek/tap/agentsview
 ```
 
-## Formulae
+Refresh the moving `main` build by reinstalling:
 
-- **agentsview** — local web viewer for AI agent sessions, CLI ([upstream](https://github.com/wesm/agentsview))
+```sh
+brew reinstall prateek/tap/agentsview
+```
 
-## Casks
+#### Casks
 
-- **agentsview-desktop** — AgentsView desktop app (Tauri)
+- `agentsview-desktop` — desktop app, installed from upstream release DMGs.
 
 ```sh
 brew install --cask prateek/tap/agentsview-desktop
