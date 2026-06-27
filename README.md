@@ -11,31 +11,14 @@ brew tap prateek/tap
 
 ## Projects
 
-### AgentsView
+_None currently._
 
-Local web viewer for AI agent sessions.
-
-- Upstream: <https://github.com/wesm/agentsview>
-- Distribution discussion: <https://github.com/wesm/agentsview/issues/347>
-
-#### Formulae
-
-- `agentsview` — CLI. Installs from upstream `main` by default.
+AgentsView graduated to the official Homebrew cask and is no longer shipped
+here. Install it with:
 
 ```sh
-brew install prateek/tap/agentsview
+brew install --cask agentsview
 ```
 
-Refresh the moving `main` build by reinstalling:
-
-```sh
-brew reinstall prateek/tap/agentsview
-```
-
-#### Casks
-
-- `agentsview-desktop` — desktop app, installed from upstream release DMGs.
-
-```sh
-brew install --cask prateek/tap/agentsview-desktop
-```
+The cask installs the desktop app and links the `agentsview` CLI onto `PATH`.
+Upstream distribution issue: <https://github.com/kenn-io/agentsview/issues/347>.
