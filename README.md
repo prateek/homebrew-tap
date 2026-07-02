@@ -11,7 +11,20 @@ brew tap prateek/tap
 
 ## Projects
 
-_None currently._
+### WinMux (columnar-zones fork)
+
+Personal dogfood builds of <https://github.com/prateek/winmux>, a fork of
+<https://github.com/zimengxiong/winmux> that adds columnar zones for ultrawide
+monitors. Not distributed upstream; this cask exists so the fork can be
+installed and upgraded on machines without a build toolchain.
+
+- Cask `winmux`: installs `WinMux.app` and links the `winmux` CLI onto `PATH`.
+  Builds are ad-hoc signed prerelease assets; the cask strips quarantine in a
+  postflight and macOS may re-prompt permissions after upgrades.
+
+```sh
+brew install --cask prateek/tap/winmux
+```
 
 AgentsView graduated to the official Homebrew cask and is no longer shipped
 here. Install it with:
