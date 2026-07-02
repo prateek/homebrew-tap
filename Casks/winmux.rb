@@ -16,11 +16,16 @@ cask "winmux" do
   app "WinMux-#{version}/WinMux.app"
   binary "WinMux-#{version}/bin/winmux"
 
-  # Release assets are ad-hoc signed, so Gatekeeper would refuse to open the
-  # app while it carries the download quarantine attribute.
+  # Release assets are ad-hoc signed, so Gatekeeper blocks anything still
+  # carrying the download quarantine attribute. The app is moved to appdir
+  # before postflight runs, but the linked CLI stays under the staged path,
+  # so both locations need the strip.
   postflight do
     system_command "/usr/bin/xattr",
                    args:         ["-dr", "com.apple.quarantine", "#{appdir}/WinMux.app"],
+                   must_succeed: false
+    system_command "/usr/bin/xattr",
+                   args:         ["-dr", "com.apple.quarantine", staged_path.to_s],
                    must_succeed: false
   end
 
