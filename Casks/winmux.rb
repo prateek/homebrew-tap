@@ -16,17 +16,23 @@ cask "winmux" do
   app "WinMux-#{version}/WinMux.app"
   binary "WinMux-#{version}/bin/winmux"
 
-  # Release assets are ad-hoc signed, so Gatekeeper blocks anything still
-  # carrying the download quarantine attribute. The app is moved to appdir
-  # before postflight runs, but the linked CLI stays under the staged path,
-  # so both locations need the strip.
+  # Release assets are ad-hoc signed. Homebrew quarantines the download and
+  # macOS records per-file download provenance at extraction time, which
+  # stalls the first exec of ad-hoc binaries even after an xattr strip.
+  # Rewriting the payload to fresh files (ditto --noqtn) sheds both. The app
+  # is moved to appdir before postflight runs, but the linked CLI stays under
+  # the staged path, so both locations need the launder.
   postflight do
-    system_command "/usr/bin/xattr",
-                   args:         ["-dr", "com.apple.quarantine", "#{appdir}/WinMux.app"],
-                   must_succeed: false
-    system_command "/usr/bin/xattr",
-                   args:         ["-dr", "com.apple.quarantine", staged_path.to_s],
-                   must_succeed: false
+    ["#{appdir}/WinMux.app", staged_path.to_s].each do |path|
+      system_command "/bin/sh",
+                     args: ["-ec", <<~SH]
+                       tmp="$(/usr/bin/mktemp -d)"
+                       /usr/bin/ditto --noqtn '#{path}' "$tmp/payload"
+                       /bin/rm -rf '#{path}'
+                       /usr/bin/ditto --noqtn "$tmp/payload" '#{path}'
+                       /bin/rm -rf "$tmp"
+                     SH
+    end
   end
 
   uninstall quit: "com.zimengxiong.winmux"
