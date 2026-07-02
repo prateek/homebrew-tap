@@ -16,35 +16,34 @@ cask "winmux" do
   app "WinMux-#{version}/WinMux.app"
   binary "WinMux-#{version}/bin/winmux"
 
-  # Release assets are ad-hoc signed. Homebrew quarantines the download and
-  # macOS records per-file download provenance at extraction time, which
-  # stalls the first exec of ad-hoc binaries even after an xattr strip.
-  # Rewriting the payload to fresh files (ditto --noqtn) sheds both. The app
-  # is moved to appdir before postflight runs, but the linked CLI stays under
-  # the staged path, so both locations need the launder.
-  postflight do
-    ["#{appdir}/WinMux.app", staged_path.to_s].each do |path|
-      system_command "/bin/sh",
-                     args: ["-ec", <<~SH]
-                       tmp="$(/usr/bin/mktemp -d)"
-                       /usr/bin/ditto --noqtn '#{path}' "$tmp/payload"
-                       /bin/rm -rf '#{path}'
-                       /usr/bin/ditto --noqtn "$tmp/payload" '#{path}'
-                       /bin/rm -rf "$tmp"
-                     SH
-    end
-  end
-
+  # No postflight quarantine handling: Homebrew re-quarantines files written
+  # by its own hooks, so stripping or rewriting the payload here does not
+  # survive to first launch. The caveats carry the working manual steps.
   uninstall quit: "com.zimengxiong.winmux"
 
   zap trash: "~/.config/winmux"
 
   caveats <<~EOS
-    This is an ad-hoc signed dogfood build. macOS may re-prompt for
-    Accessibility, Screen Recording, and Input Monitoring permissions after
-    each upgrade because the code signature changes per build.
+    This build is self-signed (stable TCC identity) but not notarized, and a
+    freshly installed or upgraded app stalls silently under Gatekeeper until
+    you do both of these:
 
-    Do not run AeroSpace and WinMux at the same time.
+    1. Rewrite the payloads to shed quarantine and download provenance:
+
+         tmp=$(mktemp -d)
+         ditto --noqtn /Applications/WinMux.app "$tmp/app" && \\
+           rm -rf /Applications/WinMux.app && \\
+           ditto --noqtn "$tmp/app" /Applications/WinMux.app
+         cli="$(readlink -f "$(command -v winmux)")"
+         ditto --noqtn "$cli" "$tmp/cli" && rm -f "$cli" && \\
+           ditto --noqtn "$tmp/cli" "$cli"
+         rm -rf "$tmp"
+
+    2. On the first launch of each version, approve the Gatekeeper block via
+       System Settings > Privacy & Security > Open Anyway.
+
+    Permissions granted to one version persist across upgrades (stable
+    signing identity). Do not run AeroSpace and WinMux at the same time.
 
     First-run zone setup:
       winmux zone init --preset balanced --write
