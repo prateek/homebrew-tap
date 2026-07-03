@@ -1,6 +1,6 @@
 cask "winmux" do
-  version "0.51.0-dogfood.2"
-  sha256 "9dda7fe924fe479f29c0e314b2b8b19abaee6edceaebc556776ed70e885ea0f3"
+  version "0.51.0-dogfood.3"
+  sha256 "672d00b86646de0f33cfc2bb55e09e9e54c130186a74b9773019dff8e16caee4"
 
   url "https://github.com/prateek/winmux/releases/download/v#{version}/WinMux-#{version}.zip"
   name "WinMux"
