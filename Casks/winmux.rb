@@ -12,7 +12,6 @@ cask "winmux" do
 
   # The app self-updates via Sparkle; brew upgrade only matters for reinstalls.
   auto_updates true
-
   depends_on arch: :arm64
   depends_on macos: :ventura
 
