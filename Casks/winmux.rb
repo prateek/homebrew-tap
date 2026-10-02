@@ -2,9 +2,9 @@ cask "winmux" do
   version "0.51.0-dogfood.15"
   sha256 "047d4ad3c28f9d297b4854e4e47278ac9320cb5ebf9a87d322b15d7600c98d57"
 
-  url "https://github.com/prateek/winmux/releases/download/v#{version}/WinMux-#{version}.zip"
+  url "https://github.com/prateek/winmux/releases/download/v#{version}/WinMux-#{version}-with-cli.zip"
   name "WinMux"
-  desc "Fork with columnar zones for ultrawide monitors"
+  desc "Sidebar-first tiling window manager, personal fork with a Nickel config"
   homepage "https://github.com/prateek/winmux"
 
   # No livecheck: dogfood builds ship as GitHub prereleases, which the
@@ -13,7 +13,7 @@ cask "winmux" do
   # The app self-updates via Sparkle; brew upgrade only matters for reinstalls.
   auto_updates true
   depends_on arch: :arm64
-  depends_on macos: :ventura
+  depends_on macos: ">= :tahoe"
 
   app "WinMux-#{version}/WinMux.app"
   binary "WinMux-#{version}/bin/winmux"
@@ -23,7 +23,10 @@ cask "winmux" do
   # survive to first launch. The caveats carry the working manual steps.
   uninstall quit: "com.zimengxiong.winmux"
 
-  zap trash: "~/.config/winmux"
+  zap trash: [
+    "~/.config/winmux",
+    "~/.local/state/winmux",
+  ]
 
   caveats <<~EOS
     This build is self-signed (stable TCC identity) but not notarized, and a
@@ -47,7 +50,7 @@ cask "winmux" do
     Permissions granted to one version persist across upgrades (stable
     signing identity). Do not run AeroSpace and WinMux at the same time.
 
-    First-run zone setup:
-      winmux zone init --preset balanced --write
+    The config is ~/.config/winmux/winmux.ncl. An existing winmux.toml is
+    converted on first launch; `winmux config check` reports mistakes.
   EOS
 end
