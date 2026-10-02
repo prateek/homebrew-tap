@@ -13,7 +13,7 @@ cask "winmux" do
   # The app self-updates via Sparkle; brew upgrade only matters for reinstalls.
   auto_updates true
   depends_on arch: :arm64
-  depends_on macos: ">= :tahoe"
+  depends_on macos: :tahoe
 
   app "WinMux-#{version}/WinMux.app"
   binary "WinMux-#{version}/bin/winmux"
