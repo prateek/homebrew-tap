@@ -47,10 +47,15 @@ cask "winmux" do
     2. On the first launch of each version, approve the Gatekeeper block via
        System Settings > Privacy & Security > Open Anyway.
 
+    On its first launch WinMux opens a setup window that walks through
+    Accessibility and Screen Recording, and moves no window until you
+    press Start WinMux.
+
     Permissions granted to one version persist across upgrades (stable
     signing identity). Do not run AeroSpace and WinMux at the same time.
 
-    The config is ~/.config/winmux/winmux.ncl. An existing winmux.toml is
-    converted on first launch; `winmux config check` reports mistakes.
+    The config is ~/.config/winmux/winmux.ncl. If there is none, an
+    existing winmux.toml is converted on first launch; `winmux config
+    check` reports mistakes.
   EOS
 end
