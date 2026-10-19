@@ -30,22 +30,15 @@ cask "winmux" do
 
   caveats <<~EOS
     This build is self-signed (stable TCC identity) but not notarized, and a
-    freshly installed or upgraded app stalls silently under Gatekeeper until
-    you do both of these:
+    freshly installed or upgraded app stalls silently under Gatekeeper, and
+    the CLI is killed on launch, until you clear their quarantine attribute:
 
-    1. Rewrite the payloads to shed quarantine and download provenance:
+         xattr -dr com.apple.quarantine /Applications/WinMux.app \\
+           "$(readlink -f "$(command -v winmux)")"
 
-         tmp=$(mktemp -d)
-         ditto --noqtn /Applications/WinMux.app "$tmp/app" && \\
-           rm -rf /Applications/WinMux.app && \\
-           ditto --noqtn "$tmp/app" /Applications/WinMux.app
-         cli="$(readlink -f "$(command -v winmux)")"
-         ditto --noqtn "$cli" "$tmp/cli" && rm -f "$cli" && \\
-           ditto --noqtn "$tmp/cli" "$cli"
-         rm -rf "$tmp"
-
-    2. On the first launch of each version, approve the Gatekeeper block via
-       System Settings > Privacy & Security > Open Anyway.
+    A plain `ditto --noqtn` copy keeps the attribute, so remove it directly.
+    If macOS still blocks the first launch, approve it once via System
+    Settings > Privacy & Security > Open Anyway.
 
     On its first launch WinMux opens a setup window that walks through
     Accessibility and Screen Recording, and moves no window until you
